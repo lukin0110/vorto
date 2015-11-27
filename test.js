@@ -1,3 +1,5 @@
-/**
- * Created by maartenhuijsmans on 27/11/15.
- */
+var vorto = require("./vorto.js");
+
+vorto.git({}, function(err, version) {
+    console.log("Version: " + version);
+});

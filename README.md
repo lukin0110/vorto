@@ -1,18 +1,18 @@
-# Verto.js
+# Vorto.js
 
 Simple module to generate a version code based on the latest git commit hash. This can be used with 
 [Gulp](http://gulpjs.com), or any other build system, when you're creating build artifacts.
 
 ## Install
 ```
-$ npm install verto --save
+$ npm install vorto --save
 ```
 
 ## Usage
 ```js
-var verto = require("verto");
+var vorto = require("vorto");
 
-verto.git({full: true}, function(err, version) {
+vorto.git({full: true}, function(err, version) {
     console.log("Version: " + version);
 });
 ```
@@ -25,4 +25,4 @@ the current directory
 
 ## LICENSE
 
-[The Apache 2.0 License](https://github.com/lukin0110/verto/blob/master/LICENSE)
+[The Apache 2.0 License](https://github.com/lukin0110/vorto/blob/master/LICENSE)

@@ -1,14 +1,14 @@
 {
-  "name": "verto",
+  "name": "vorto",
   "version": "0.1.0",
   "description": "Generate version codes",
-  "main": "verto.js",
+  "main": "vorto.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/lukin0110/verto.git"
+    "url": "git+https://github.com/lukin0110/vorto.git"
   },
   "keywords": [
     "git",
@@ -25,10 +25,10 @@
   },
   "license": "Apache 2.0",
   "bugs": {
-    "url": "https://github.com/lukin0110/verto/issues"
+    "url": "https://github.com/lukin0110/vorto/issues"
   },
   "readmeFilename": "README.md",
-  "homepage": "https://github.com/lukin0110/verto#readme",
+  "homepage": "https://github.com/lukin0110/vorto#readme",
   "dependencies": {
     "q": "^1.4.1"
   }
