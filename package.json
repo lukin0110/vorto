@@ -1,0 +1,35 @@
+{
+  "name": "verto",
+  "version": "0.1.0",
+  "description": "Generate version codes",
+  "main": "verto.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lukin0110/verto.git"
+  },
+  "keywords": [
+    "git",
+    "version",
+    "package"
+  ],
+  "author": {
+    "name": "Maarten Huijsmans",
+    "email": "maarten@lukin.be",
+    "url": "http://lukin.be"
+  },
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "license": "Apache 2.0",
+  "bugs": {
+    "url": "https://github.com/lukin0110/verto/issues"
+  },
+  "readmeFilename": "README.md",
+  "homepage": "https://github.com/lukin0110/verto#readme",
+  "dependencies": {
+    "q": "^1.4.1"
+  }
+}
