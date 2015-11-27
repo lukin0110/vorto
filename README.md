@@ -15,6 +15,8 @@ var vorto = require("vorto");
 vorto.git({full: true}, function(err, version) {
     console.log("Version: " + version);
 });
+
+//Version: 8e0b117c20951012fb3cec7de45100f01d085e58
 ```
 
 ## Options
