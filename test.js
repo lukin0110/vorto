@@ -1,9 +1,15 @@
 var vorto = require("./vorto.js");
 
-vorto.git({}, function(err, version) {
-    console.log("Version: " + version);
+
+vorto(function(err, version) {
+    console.log("Version 1: " + version);
 });
 
-vorto.git({full: true}, function(err, version) {
-    console.log("Version: " + version);
+vorto("%H", function(err, version) {
+    console.log("Version 2: " + version);
+});
+
+vorto("%ct-%h", {repo: "../triflux"}, function(err, version) {
+    console.log("Version 3.1: " + err);
+    console.log("Version 3.2: " + version);
 });

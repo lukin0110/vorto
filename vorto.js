@@ -1,29 +1,69 @@
 "use strict";
 var fs = require("fs");
 var path = require("path");
-var q = require("q");
 var spawn = require("child_process").spawn;
 
 var DEFAULTS = {
-    repo: "",
-    full: false
+    repo: ""
 };
+
+/**
+ * %h/%H %t %T
+ */
+function vorto() {
+    var length = arguments.length;
+    var format, options, callback;
+
+    if (typeof arguments[length-1] !== "function") {
+        throw new Error("The last argument must be a callback function: function(err, version){...}");
+    } else {
+        callback = arguments[length-1];
+    }
+
+    if (length === 1) {
+        format = "%h";
+        options = DEFAULTS;
+
+    } else if (length === 2) {
+        if (typeof arguments[0] !== "string") {
+            callback(new Error("First argument must be a string"), null);
+        }
+        format = arguments[0];
+        options = DEFAULTS;
+
+    } else if (length === 3) {
+        if (typeof arguments[0] !== "string") {
+            callback(new Error("First argument must be a string"), null);
+        }
+
+        if (typeof arguments[1] !== "object") {
+            callback(new Error("Second argument must be an object"), null);
+        }
+
+        format = arguments[0];
+        options = arguments[1];
+    }
+
+    git(format, options, callback);
+}
 
 /**
  * git --git-dir=.git log --pretty='%ct %h' -1
  * git --git-dir=.git log --pretty='%h' -1
  *
+ * More info about the formatting options: http://git-scm.com/docs/pretty-formats
+ *
+ * @param {string} format
  * @param {object} options
  * @param {function} callback
  */
-function git(options, callback) {
+function git(format, options, callback) {
     var repo = (options && options.hasOwnProperty("repo")) ? options.repo : DEFAULTS.repo;
-    var full = (options && options.hasOwnProperty("full")) ? options.full : DEFAULTS.full;
     var joined = path.join(repo, ".git");
-    var format = full ? "%H" : "%h";
 
     if (!fs.existsSync(joined)) {
-        throw new Error("No .git folder detected in the directory '" + repo + "'");
+        callback(new Error("No .git folder detected in the directory '" + repo + "'"), null);
+        return;
     }
 
     var child = spawn("git", ["--git-dir=" + joined, "log", "--pretty=" + format, "-1"], {cwd: process.cwd()}),
@@ -41,27 +81,13 @@ function git(options, callback) {
     });
 
     child.on("close", function() {
-        var normalized = stdout.replace(/(?:\r\n|\r|\n)/g, "");
-        //console.log("Version: " + normalized);
-        callback(null, normalized);
-    });
-}
-
-function gitp(options) {
-    var deferred = q.defer();
-
-    git(options, function(err, version) {
-        if (err) {
-            deferred.reject();
+        if (stderr.length > 0) {
+            callback(new Error("An error occurred: '" + stderr + "'"), null);
         } else {
-            deferred.resolve(version);
+            var normalized = stdout.replace(/(?:\r\n|\r|\n)/g, "");
+            callback(null, normalized);
         }
     });
-
-    return deferred.promise;
 }
 
-module.exports = {
-    git: git,
-    gitp: gitp
-};
+module.exports = vorto;
