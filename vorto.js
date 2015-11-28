@@ -27,6 +27,7 @@ function vorto() {
     } else if (length === 2) {
         if (typeof arguments[0] !== "string") {
             callback(new Error("First argument must be a string"), null);
+            return;
         }
         format = arguments[0];
         options = DEFAULTS;
@@ -34,10 +35,12 @@ function vorto() {
     } else if (length === 3) {
         if (typeof arguments[0] !== "string") {
             callback(new Error("First argument must be a string"), null);
+            return;
         }
 
         if (typeof arguments[1] !== "object") {
             callback(new Error("Second argument must be an object"), null);
+            return;
         }
 
         format = arguments[0];
@@ -58,8 +61,7 @@ function vorto() {
  * @param {function} callback
  */
 function git(format, options, callback) {
-    var repo = (options && options.hasOwnProperty("repo")) ? options.repo : DEFAULTS.repo;
-    var joined = path.join(repo, ".git");
+    var joined = path.join(options.repo, ".git");
 
     if (!fs.existsSync(joined)) {
         callback(new Error("No .git folder detected in the directory '" + repo + "'"), null);
