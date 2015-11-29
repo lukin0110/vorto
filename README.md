@@ -1,6 +1,6 @@
 # Vorto.js
 
-Simple module to generate a version code based on the latest git commit hash of a repository. This can be used with 
+Simple module to generate build numbers based on the latest git commit hash. This can be used with 
 [Gulp](http://gulpjs.com), or any other build system, when you're creating build artifacts.
 
 ## Install
@@ -15,6 +15,11 @@ vorto([format][, options], callback);
 
 The `format` and `options` parameters are optional. The last argument must be a callback function of the de facto async
 standard `function(err, version) {...}`.
+
+## Options
+
+* `repo`: specify the directory of the repository that you want to generate a version code for. The *default* is 
+the current directory
 
 ## Examples
 
@@ -51,12 +56,22 @@ vorto("%ct-%h", function(err, version) {
 //Version: 1448640790-7f562ba
 ```
 
+Gulp example:
+```js
+var gulp = require("gulp");
+var vorto = require("vorto");
+
+var GIT_VERSION;
+
+gulp.task("version", function(cb) {
+    vorto(function(err, version){
+        GIT_VERSION = version;
+        cb();
+    });
+});
+```
+
 Read more about the [pretty format options](http://git-scm.com/docs/pretty-formats) to see whats available.
-
-## Options
-
-* `repo`: specify the directory of the repository that you want to generate a version code for. The *default* is 
-the current directory
 
 ## LICENSE
 

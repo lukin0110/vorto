@@ -4,7 +4,8 @@ var path = require("path");
 var spawn = require("child_process").spawn;
 
 var DEFAULTS = {
-    repo: ""
+    repo: "",       // path to the repository, default the current one
+    git: "git"      // path to the git command, default it's assumed to be in the $PATH environment variable
 };
 
 /**
@@ -25,29 +26,67 @@ function vorto() {
         options = DEFAULTS;
 
     } else if (length === 2) {
-        if (typeof arguments[0] !== "string") {
-            callback(new Error("First argument must be a string"), null);
-            return;
+        if (typeof arguments[0] === "string") {
+            format = arguments[0];
+            options = DEFAULTS;
+        } else if (typeof arguments[0] === "object"){
+            format = "%h";
+            options = createOptions(arguments[0], DEFAULTS);
+        } else {
+            throw new Error("First argument must be a 'string' or an 'object'");
         }
-        format = arguments[0];
-        options = DEFAULTS;
 
     } else if (length === 3) {
         if (typeof arguments[0] !== "string") {
-            callback(new Error("First argument must be a string"), null);
-            return;
+            throw new Error("First argument must be a string");
         }
 
         if (typeof arguments[1] !== "object") {
-            callback(new Error("Second argument must be an object"), null);
-            return;
+            throw new Error("Second argument must be an object");
         }
 
         format = arguments[0];
-        options = arguments[1];
+        options = createOptions(arguments[1], DEFAULTS);
     }
 
-    git(format, options, callback);
+    if (format.indexOf("%j")>-1) {
+        var j = packageVersion(options.repo);
+
+        git(format, options, function(err, version) {
+            if (err) {
+                callback(err, null);
+            } else {
+                callback(null, version.replace("%j", j))
+            }
+        });
+
+    } else {
+        git(format, options, callback);
+    }
+}
+
+/**
+ *
+ * @param {object} options
+ * @param {object} defaults
+ * @returns {{repo: (string|*|string), git: (string|*)}}
+ */
+function createOptions(options, defaults) {
+    return {
+        repo: options.repo ? options.repo : defaults.repo,
+        git: options.git ? options.git : defaults.git
+    };
+}
+
+/**
+ * Load the version from package.json
+ *
+ * @param {string} repo
+ */
+function packageVersion(repo) {
+    var location = repo ? path.join(repo, "package.json") : "./package.json";
+    var pack = require(location);
+    return pack["version"];
 }
 
 /**
@@ -68,9 +107,9 @@ function git(format, options, callback) {
         return;
     }
 
-    var child = spawn("git", ["--git-dir=" + joined, "log", "--pretty=" + format, "-1"], {cwd: process.cwd()}),
-        stdout = "",
-        stderr = "";
+    var stdout = "";
+    var stderr = "";
+    var child = spawn(options.git, ["--git-dir=" + joined, "log", "--pretty=" + format, "-1"], {cwd: process.cwd()});
 
     child.stdout.setEncoding("utf8");
     child.stdout.on("data", function (data) {
