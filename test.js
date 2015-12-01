@@ -56,5 +56,4 @@ describe('vorto', function() {
             done();
         });
     });
-
 });

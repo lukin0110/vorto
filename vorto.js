@@ -9,7 +9,11 @@ var DEFAULTS = {
 };
 
 /**
- * %h/%H %t %T
+ * Init function that might take 3 parameters. It checks the input parameters and will throw errors if they're not
+ * valid or wrongly ordered.
+ *
+ * The callback is always required.
+ * vorto([format][, options], callback);
  */
 function vorto() {
     var length = arguments.length;
