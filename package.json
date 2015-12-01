@@ -25,12 +25,15 @@
   "engines": {
     "node": ">=0.10.0"
   },
-  "license": "Apache 2.0",
+  "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/lukin0110/vorto/issues"
   },
   "readmeFilename": "README.md",
   "homepage": "https://github.com/lukin0110/vorto#readme",
-  "dependencies": {
+  "dependencies": {},
+  "devDependencies": {
+    "mocha": "^2.3.4",
+    "should": "^7.1.1"
   }
 }
