@@ -1,11 +1,11 @@
-"use strict";
-var fs = require("fs");
-var path = require("path");
-var spawn = require("child_process").spawn;
+'use strict';
+var fs = require('fs');
+var path = require('path');
+var spawn = require('child_process').spawn;
 
 var DEFAULTS = {
-    repo: "",       // path to the repository, default the current one
-    git: "git"      // path to the git command, default it's assumed to be in the $PATH environment variable
+    repo: '',       // path to the repository, default the current one
+    git: 'git'      // path to the git command, default it's assumed to be in the $PATH environment variable
 };
 
 /**
@@ -15,48 +15,48 @@ function vorto() {
     var length = arguments.length;
     var format, options, callback;
 
-    if (typeof arguments[length-1] !== "function") {
-        throw new Error("The last argument must be a callback function: function(err, version){...}");
+    if (typeof arguments[length-1] !== 'function') {
+        throw new Error('The last argument must be a callback function: function(err, version){...}');
     } else {
         callback = arguments[length-1];
     }
 
     if (length === 1) {
-        format = "%h";
+        format = '%h';
         options = DEFAULTS;
 
     } else if (length === 2) {
-        if (typeof arguments[0] === "string") {
+        if (typeof arguments[0] === 'string') {
             format = arguments[0];
             options = DEFAULTS;
-        } else if (typeof arguments[0] === "object"){
-            format = "%h";
+        } else if (typeof arguments[0] === 'object'){
+            format = '%h';
             options = createOptions(arguments[0], DEFAULTS);
         } else {
-            throw new Error("First argument must be a 'string' or an 'object'");
+            throw new Error('First argument must be a \'string\' or an \'object\'');
         }
 
     } else if (length === 3) {
-        if (typeof arguments[0] !== "string") {
-            throw new Error("First argument must be a string");
+        if (typeof arguments[0] !== 'string') {
+            throw new Error('First argument must be a string');
         }
 
-        if (typeof arguments[1] !== "object") {
-            throw new Error("Second argument must be an object");
+        if (typeof arguments[1] !== 'object') {
+            throw new Error('Second argument must be an object');
         }
 
         format = arguments[0];
         options = createOptions(arguments[1], DEFAULTS);
     }
 
-    if (format.indexOf("%j")>-1) {
+    if (format.indexOf('%j')>-1) {
         var j = packageVersion(options.repo);
 
         git(format, options, function(err, version) {
             if (err) {
                 callback(err, null);
             } else {
-                callback(null, version.replace("%j", j))
+                callback(null, version.replace('%j', j));
             }
         });
 
@@ -84,9 +84,9 @@ function createOptions(options, defaults) {
  * @param {string} repo
  */
 function packageVersion(repo) {
-    var location = repo ? path.join(repo, "package.json") : "./package.json";
+    var location = repo ? path.join(repo, 'package.json') : './package.json';
     var pack = require(location);
-    return pack["version"];
+    return pack['version'];
 }
 
 /**
@@ -100,32 +100,32 @@ function packageVersion(repo) {
  * @param {function} callback
  */
 function git(format, options, callback) {
-    var joined = path.join(options.repo, ".git");
+    var joined = path.join(options.repo, '.git');
 
     if (!fs.existsSync(joined)) {
-        callback(new Error("No .git folder detected in the directory '" + repo + "'"), null);
+        callback(new Error('No .git folder detected in the directory \'' + options.repo + '\''), null);
         return;
     }
 
-    var stdout = "";
-    var stderr = "";
-    var child = spawn(options.git, ["--git-dir=" + joined, "log", "--pretty=" + format, "-1"], {cwd: process.cwd()});
+    var stdout = '';
+    var stderr = '';
+    var child = spawn(options.git, ['--git-dir=' + joined, 'log', '--pretty=' + format, '-1'], {cwd: process.cwd()});
 
-    child.stdout.setEncoding("utf8");
-    child.stdout.on("data", function (data) {
+    child.stdout.setEncoding('utf8');
+    child.stdout.on('data', function (data) {
         stdout += data;
     });
 
-    child.stderr.setEncoding("utf8");
-    child.stderr.on("data", function (data) {
+    child.stderr.setEncoding('utf8');
+    child.stderr.on('data', function (data) {
         stderr += data;
     });
 
-    child.on("close", function() {
+    child.on('close', function() {
         if (stderr.length > 0) {
-            callback(new Error("An error occurred: '" + stderr + "'"), null);
+            callback(new Error('An error occurred: \'' + stderr + '\''), null);
         } else {
-            var normalized = stdout.replace(/(?:\r\n|\r|\n)/g, "");
+            var normalized = stdout.replace(/(?:\r\n|\r|\n)/g, '');
             callback(null, normalized);
         }
     });
