@@ -44,6 +44,7 @@ describe('vorto', function() {
 
     it("should return the package version", function(done) {
         vorto("%j", function(err, version) {
+            console.log("Version 4: " + version);
             var pack = require("./package.json");
             version.should.be.exactly(pack.version);
             done();
